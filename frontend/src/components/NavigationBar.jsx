@@ -6,7 +6,7 @@ const NavigationBar = () => {
   return (
     <nav className="navbar">
       <div className="navbar-container">
-        <h1 className="logo">Todo App</h1>
+        <h3 className="logo">Todo App</h3>
         <ul className="navbar-list">
           <li className="navbar-item">
             <Link to="/" className="navbar-link">
