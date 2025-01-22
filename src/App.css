@@ -1,0 +1,135 @@
+:root {
+  --dark-bg: #1a1a1a; /* Đen đậm */
+  --dark-text: #e0e0e0; /* Màu văn bản sáng */
+  --dark-green: #4c9a2a; /* Xanh lá sẫm */
+  --border-color: #ffffff20; /* Viền trắng nhẹ */
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.nav {
+  background-color: var(--dark-green);
+  color: var(--dark-text);
+  padding: 15px;
+  width: 250px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-right: 1px solid var(--border-color);
+}
+
+.nav h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.navList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navItem {
+  margin-bottom: 10px;
+}
+
+.navItem a {
+  text-decoration: none;
+  color: var(--dark-text);
+  font-size: 18px;
+  display: block;
+  padding: 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.navItem a:hover {
+  background-color: #333333;
+}
+
+.task-app {
+  flex-grow: 1;
+  padding: 20px;
+}
+
+.task-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.task-input input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: #333;
+  color: var(--dark-text);
+}
+
+.task-input button {
+  padding: 10px;
+  background-color: var(--dark-green);
+  color: var(--dark-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.task-input button:hover {
+  background-color: #417f16;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  margin-bottom: 10px;
+  background-color: #333;
+  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  align-items: center;
+}
+
+.task-list li.completed {
+  background-color: #444;
+}
+
+.task-list button {
+  padding: 5px 10px;
+  background-color: var(--dark-green);
+  border: none;
+  color: var(--dark-text);
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.task-list button:hover {
+  background-color: #417f16;
+}
+
+.task-list li span {
+  flex-grow: 1;
+  cursor: pointer;
+}
+
+.task-list li span.completed {
+  text-decoration: line-through;
+  color: #777;
+}
