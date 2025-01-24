@@ -9,7 +9,7 @@ const TasksApp = () => {
   // Fetch tasks from backend (all tasks + finished tasks)
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/v1/tasks") // Get all tasks
+      .get("http://localhost:5000/api/v1/tasks?finish=false") // Get only tasks where finished is false
       .then((response) => {
         setTasks(response.data.data); // Assuming response contains a 'data' field with an array of tasks
       })
@@ -28,7 +28,6 @@ const TasksApp = () => {
 
   return (
     <div className="task-app">
-      <h1>Todo App</h1>
       <div className="task-input">
         <input
           type="text"

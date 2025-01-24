@@ -10,7 +10,6 @@ const HomePage = () => {
       className="home-page"
       style={{ marginTop: isFullPage ? "120px" : "200px" }}
     >
-      <h1>FINISHED TASKS UNTIL NOW</h1>
       <TasksHome />
     </div>
   );

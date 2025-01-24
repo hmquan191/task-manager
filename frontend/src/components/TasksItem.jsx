@@ -4,6 +4,25 @@ import axios from "axios";
 const TasksItem = ({ task, tasks, setTasks }) => {
   const [notification, setNotification] = useState(""); // For notification message
 
+  // Format date and time
+  const formatDateTime = (date) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false, // 24-hour format
+    };
+
+    // Format the date and time
+    const formattedDateTime = new Date(date).toLocaleString("vi-VN", options);
+
+    // Remove "lúc" if it appears in the formatted string
+    return formattedDateTime.replace("lúc ", "");
+  };
+
   // Delete task
   const deleteTask = () => {
     axios
@@ -56,6 +75,12 @@ const TasksItem = ({ task, tasks, setTasks }) => {
           <i className="fas fa-times"></i>
         </button>
       )}
+
+      {/* Display formatted dates and times */}
+      <div>
+        <span>Ngày tạo: {formatDateTime(task.createdAt)}</span>
+        <br />
+      </div>
 
       {/* Notification */}
       {notification && (
