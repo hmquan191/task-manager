@@ -1,7 +1,7 @@
 import React from "react";
 
 import { useMediaQuery } from "react-responsive";
-
+import TasksHome from "../components/TasksHome";
 const HomePage = () => {
   const isFullPage = useMediaQuery({ minWidth: 768 });
 
@@ -10,7 +10,8 @@ const HomePage = () => {
       className="home-page"
       style={{ marginTop: isFullPage ? "120px" : "200px" }}
     >
-      <h1>Welcome to Todo App</h1>
+      <h1>FINISHED TASKS UNTIL NOW</h1>
+      <TasksHome />
     </div>
   );
 };

@@ -2,11 +2,16 @@ import React from "react";
 import TasksItem from "./TasksItem";
 
 const TasksList = ({ tasks, setTasks }) => {
+  if (!Array.isArray(tasks)) {
+    console.error("Tasks is not an array:", tasks);
+    return <p>No tasks available</p>; // Or a fallback UI
+  }
+
   return (
-    <ul className="task-list">
+    <ul>
       {tasks.map((task) => (
         <TasksItem
-          key={task.id}
+          key={task._id}
           task={task}
           tasks={tasks}
           setTasks={setTasks}
