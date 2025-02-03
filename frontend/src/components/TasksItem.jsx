@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "./styles/TasksItem.css";
 
 const TasksItem = ({ task, tasks, setTasks }) => {
-  const [notification, setNotification] = useState(""); // For notification message
+  const [notification, setNotification] = useState("");
+  const [showEditHint, setShowEditHint] = useState(false);
+  const [isHoveringToggle, setIsHoveringToggle] = useState(false);
+  const [isHoveringDelete, setIsHoveringDelete] = useState(false);
+  const [isEditing, setIsEditing] = useState(false); // Track if we are editing
+  const [editText, setEditText] = useState(task.description); // Store the new task description
 
   // Format date and time
   const formatDateTime = (date) => {
@@ -13,14 +19,13 @@ const TasksItem = ({ task, tasks, setTasks }) => {
       hour: "2-digit",
       minute: "2-digit",
       second: "2-digit",
-      hour12: false, // 24-hour format
+      hour12: false,
     };
-
-    // Format the date and time
-    const formattedDateTime = new Date(date).toLocaleString("vi-VN", options);
-
-    // Remove "lúc" if it appears in the formatted string
-    return formattedDateTime.replace("lúc ", "");
+    const formattedDate = new Date(date).toLocaleDateString("vi-VN");
+    const formattedTime = new Date(date).toLocaleTimeString("vi-VN", {
+      hour12: false,
+    });
+    return `${formattedTime} ${formattedDate}`;
   };
 
   // Delete task
@@ -28,66 +33,126 @@ const TasksItem = ({ task, tasks, setTasks }) => {
     axios
       .delete(`http://localhost:5000/api/v1/tasks/${task._id}`)
       .then(() => {
-        setTasks(tasks.filter((t) => t._id !== task._id)); // Remove task from UI
-        console.log("Task deleted successfully!");
-        setNotification("Task deleted successfully!"); // Show notification
-        setTimeout(() => setNotification(""), 3000); // Hide notification after 3 seconds
+        setTasks(tasks.filter((t) => t._id !== task._id));
+        setNotification("Task deleted successfully!");
+        setTimeout(() => setNotification(""), 3000);
       })
       .catch((error) => console.error("Error deleting task:", error));
   };
 
-  // Toggle task completion (mark as finished)
+  // Toggle task completion
   const toggleCompletion = () => {
-    const updatedTask = { ...task, finish: true }; // Mark the task as completed
+    setTasks(tasks.filter((t) => t._id !== task._id)); // Cập nhật UI ngay lập tức
+
     axios
-      .put(`http://localhost:5000/api/v1/tasks/${task._id}`, updatedTask)
-      .then((response) => {
-        setTasks(tasks.filter((t) => t._id !== task._id)); // Remove the task from the list (it should now appear in the finished tasks list)
-        setNotification("Task completed and removed from the active list!");
-        setTimeout(() => setNotification(""), 3000); // Hide notification after 3 seconds
+      .put(`http://localhost:5000/api/v1/tasks/${task._id}`, {
+        ...task,
+        finish: !task.finish,
       })
       .catch((error) => console.error("Error updating task:", error));
   };
 
+  // Start editing the task
+  const startEditing = () => {
+    setIsEditing(true);
+  };
+
+  // Save the edited task
+  const saveEdit = () => {
+    if (editText !== task.description) {
+      axios
+        .put(`http://localhost:5000/api/v1/tasks/${task._id}`, {
+          description: editText,
+          finish: task.finish,
+        })
+        .then(() => {
+          setTasks(
+            tasks.map((t) =>
+              t._id === task._id ? { ...t, description: editText } : t
+            )
+          );
+          setIsEditing(false); // Exit edit mode after saving
+        })
+        .catch((error) => console.error("Error editing task:", error));
+    } else {
+      setIsEditing(false); // Exit edit mode if no change
+    }
+  };
+
+  // Cancel editing
+  const cancelEdit = () => {
+    setIsEditing(false); // Simply exit edit mode without saving
+  };
+
   return (
-    <li className={task.finish ? "completed" : ""}>
-      <span onClick={toggleCompletion}>
+    <li className="task-item">
+      <span
+        className="task-toggle"
+        onClick={toggleCompletion}
+        onMouseEnter={() => setIsHoveringToggle(true)}
+        onMouseLeave={() => setIsHoveringToggle(false)}
+      >
         <i
-          className={`${task.finish ? "fas fa-check-circle" : "far fa-circle"}`}
+          className={`fas ${task.finish ? "fa-check-circle" : "fa-circle"}`}
           style={{
-            color: task.finish ? "green" : "black",
+            color: task.finish ? "green" : "grey",
             marginRight: "10px",
             cursor: "pointer",
           }}
         ></i>
-        {task.description}
+        {isHoveringToggle && <span className="hover-tooltip">Finish</span>}
       </span>
+
+      {/* Task Name */}
+      {!isEditing ? (
+        <span
+          className="task-name"
+          onMouseEnter={() => setShowEditHint(true)}
+          onMouseLeave={() => setShowEditHint(false)}
+          onClick={startEditing}
+        >
+          {task.description}
+          {showEditHint && <span className="edit-hint"> (Click to edit)</span>}
+        </span>
+      ) : (
+        <div className="edit-task-container">
+          <input
+            type="text"
+            value={editText}
+            onChange={(e) => setEditText(e.target.value)}
+            className="edit-input"
+          />
+          <button id="saveEditButton" onClick={saveEdit}>
+            Save
+          </button>
+          <button id="cancelEditButtonn" onClick={cancelEdit}>
+            Cancel
+          </button>
+        </div>
+      )}
+
+      {/* Delete Button */}
       {!task.finish && (
         <button
+          className="delete-button"
           onClick={deleteTask}
-          style={{
-            color: "red",
-            border: "none",
-            background: "none",
-            cursor: "pointer",
-          }}
+          onMouseEnter={() => setIsHoveringDelete(true)}
+          onMouseLeave={() => setIsHoveringDelete(false)}
         >
           <i className="fas fa-times"></i>
+          {isHoveringDelete && (
+            <span className="hover-tooltip">Delete task</span>
+          )}
         </button>
       )}
 
-      {/* Display formatted dates and times */}
+      {/* Task Created Date */}
       <div>
-        <span>Ngày tạo: {formatDateTime(task.createdAt)}</span>
-        <br />
+        <span>{formatDateTime(task.createdAt)}</span>
       </div>
 
       {/* Notification */}
-      {notification && (
-        <div style={{ color: "green", marginTop: "5px", fontSize: "12px" }}>
-          {notification}
-        </div>
-      )}
+      {notification && <div className="notification">{notification}</div>}
     </li>
   );
 };

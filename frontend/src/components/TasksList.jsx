@@ -1,6 +1,6 @@
 import React from "react";
 import TasksItem from "./TasksItem";
-
+import "./styles/TasksList.css";
 const TasksList = ({ tasks, setTasks }) => {
   if (!Array.isArray(tasks)) {
     console.error("Tasks is not an array:", tasks);

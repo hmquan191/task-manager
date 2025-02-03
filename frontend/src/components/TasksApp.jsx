@@ -1,43 +1,83 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import TasksList from "./TasksList";
+import "./styles/TasksApp.css";
 
 const TasksApp = () => {
-  const [tasks, setTasks] = useState([]); // Initialize tasks as an empty array
-  const [newTask, setNewTask] = useState(""); // State for new task input
+  const [tasks, setTasks] = useState([]);
+  const [newTask, setNewTask] = useState("");
+  const [showInput, setShowInput] = useState(false);
 
-  // Fetch tasks from backend (all tasks + finished tasks)
+  // Fetch tasks from backend
   useEffect(() => {
-    axios
-      .get("http://localhost:5000/api/v1/tasks?finish=false") // Get only tasks where finished is false
-      .then((response) => {
-        setTasks(response.data.data); // Assuming response contains a 'data' field with an array of tasks
-      })
-      .catch((error) => console.error("Error fetching tasks:", error));
-  }, []); // Empty dependency array ensures this effect runs only once when component mounts
+    const fetchTasks = async () => {
+      try {
+        const [unfinishedTasksResponse, finishedTasksResponse] =
+          await Promise.all([
+            axios.get("http://localhost:5000/api/v1/tasks?finish=false"),
+            // axios.get("http://localhost:5000/api/v1/tasks?finish=true"),
+          ]);
+
+        const unfinishedTasks = unfinishedTasksResponse.data.data;
+        // const finishedTasks = finishedTasksResponse.data.data;
+
+        // setTasks([...unfinishedTasks, ...finishedTasks]);
+
+        setTasks([...unfinishedTasks]);
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchTasks();
+  }, []);
 
   // Add a new task
   const addTask = () => {
     const task = { description: newTask };
     axios
       .post("http://localhost:5000/api/v1/tasks", task)
-      .then((response) => setTasks([...tasks, response.data.data])) // Add the new task to the state
+      .then((response) => setTasks([response.data.data, ...tasks]))
       .catch((error) => console.error("Error adding task:", error));
-    setNewTask(""); // Clear the input field after adding the task
+    setNewTask("");
+    setShowInput(false);
   };
 
   return (
     <div className="task-app">
-      <div className="task-input">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="Enter a task..."
-        />
-        <button onClick={addTask}>Add Task</button>
-      </div>
-      <TasksList tasks={tasks} setTasks={setTasks} />
+      {!showInput && (
+        <div className="button-container">
+          <button id="add-button" onClick={() => setShowInput(true)}>
+            + Add Item
+          </button>
+        </div>
+      )}
+
+      {showInput && (
+        <div className="task-input">
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            placeholder="Enter a task..."
+          />
+          <div className="task-buttons">
+            <button id="taskadd-button" onClick={addTask}>
+              Add
+            </button>
+            <button id="cancel-button" onClick={() => setShowInput(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Task Container */}
+      {tasks.length > 0 && (
+        <div className="task-container">
+          <TasksList tasks={tasks} setTasks={setTasks} />
+        </div>
+      )}
     </div>
   );
 };

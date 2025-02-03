@@ -1,0 +1,5 @@
+ul {
+  list-style-type: none; /* Loại bỏ bullet points */
+  padding: 0; /* Xóa padding mặc định của ul */
+  margin: 0; /* Xóa margin mặc định của ul */
+}
