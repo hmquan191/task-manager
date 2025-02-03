@@ -21,7 +21,11 @@ const TasksItem = ({ task, tasks, setTasks }) => {
       second: "2-digit",
       hour12: false,
     };
-    const formattedDate = new Date(date).toLocaleDateString("vi-VN");
+    const formattedDate = new Date(date).toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
     const formattedTime = new Date(date).toLocaleTimeString("vi-VN", {
       hour12: false,
     });
