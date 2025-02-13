@@ -6,15 +6,19 @@
   border-bottom: 1px solid #444;
   font-size: 18px;
   color: rgb(0, 0, 0);
-  transition: background 0.3s;
-  gap: 15px; /* Tạo khoảng cách giữa các phần tử */
+  gap: 15px;
+  border-radius: 8px;
+}
+
+.task-item:hover {
+  cursor: pointer;
 }
 
 .task-content {
   display: flex;
-  flex-direction: column; /* Sắp xếp theo chiều dọc */
-  flex-grow: 1; /* Chiếm phần còn lại của hàng */
-  gap: 5px; /* Khoảng cách giữa các dòng */
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 5px;
 }
 
 .task-meta {
@@ -23,5 +27,78 @@
 }
 
 .task-meta span {
-  white-space: nowrap; /* Ngăn text bị xuống dòng */
+  white-space: nowrap;
+}
+
+.edit-task-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.edit-input,
+.date-input {
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #666;
+  background: white;
+  color: black;
+  width: 50%;
+}
+
+.priority-input {
+  padding: 8px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #666;
+  background: white;
+  color: black;
+  width: 53.4%;
+}
+
+.save-button,
+.cancel-button {
+  padding: 8px 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 53.4%;
+  transition: background 0.3s;
+}
+
+.save-button {
+  background-color: green;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: lightgreen;
+  color: black;
+}
+
+.cancel-button {
+  background-color: red;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: lightcoral;
+  color: black;
+}
+
+.delete-button {
+  background: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.delete-button:hover {
+  background: lightcoral;
+  color: black;
 }

@@ -131,11 +131,16 @@ const TasksApp = () => {
             <option value="low">Low</option>
           </select>
           <div className="task-buttons">
-            <button className="btn confirm-btn" onClick={addTask}>
+            <button
+              className="btn confirm-btn"
+              id="add-button"
+              onClick={addTask}
+            >
               Add
             </button>
             <button
               className="btn cancel-btn"
+              id="cancel-button"
               onClick={() => setShowInput(false)}
             >
               Cancel
