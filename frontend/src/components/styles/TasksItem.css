@@ -7,126 +7,21 @@
   font-size: 18px;
   color: rgb(0, 0, 0);
   transition: background 0.3s;
+  gap: 15px; /* Tạo khoảng cách giữa các phần tử */
 }
 
-.task-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.task-toggle {
-  position: relative;
-}
-
-.task-name {
-  flex-grow: 1;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.task-name:hover {
-  color: #1bd41b;
-}
-
-.edit-hint {
-  font-size: 14px;
-  color: #201b1b;
-  margin-left: 5px;
-}
-
-.delete-button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  color: red;
-  position: relative;
-}
-
-.hover-tooltip {
-  position: absolute;
-  background: black;
-  color: rgb(255, 255, 255);
-  padding: 5px;
-  font-size: 12px;
-  border-radius: 5px;
-  top: -25px;
-  left: 50%;
-  transform: translateX(-50%);
-  white-space: nowrap;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.task-toggle:hover .hover-tooltip,
-.delete-button:hover .hover-tooltip {
-  opacity: 1;
-}
-
-.notification {
-  color: green;
-  margin-top: 5px;
-  font-size: 14px;
-}
-
-.edit-task-container {
-  background-color: #f4f4f4;
-  border-radius: 8px;
-  padding: 20px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 300px;
-  margin: 0 auto;
+.task-content {
   display: flex;
-  flex-direction: column;
-  gap: 15px;
+  flex-direction: column; /* Sắp xếp theo chiều dọc */
+  flex-grow: 1; /* Chiếm phần còn lại của hàng */
+  gap: 5px; /* Khoảng cách giữa các dòng */
 }
 
-.edit-input {
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #ccc;
-  border-radius: 5px;
-  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+.task-meta {
+  display: flex;
+  gap: 10px; /* Tạo khoảng cách giữa Due Date và Priority */
 }
 
-.edit-input:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
-}
-
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-}
-
-#saveEditButton {
-  background-color: #4caf50;
-  color: white;
-}
-
-#saveEditButton:hover {
-  background-color: #45a049;
-  transform: translateY(-2px);
-}
-
-#cancelEditButtonn {
-  background-color: #f44336;
-  color: white;
-}
-
-#cancelEditButtonn:hover {
-  background-color: #e53935;
-  transform: translateY(-2px);
-}
-
-button:active {
-  transform: translateY(1px);
-}
-
-button:focus {
-  outline: none;
+.task-meta span {
+  white-space: nowrap; /* Ngăn text bị xuống dòng */
 }

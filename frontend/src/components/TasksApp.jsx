@@ -1,91 +1,7 @@
-// import React, { useState, useEffect } from "react";
-// import axios from "axios";
-// import TasksList from "./TasksList";
-// import "./styles/TasksApp.css";
-
-// const TasksApp = () => {
-//   const [tasks, setTasks] = useState([]);
-//   const [newTask, setNewTask] = useState("");
-//   const [showInput, setShowInput] = useState(false);
-
-//   // Fetch tasks from backend
-//   useEffect(() => {
-//     const fetchTasks = async () => {
-//       try {
-//         const [unfinishedTasksResponse, finishedTasksResponse] =
-//           await Promise.all([
-//             axios.get("http://localhost:5000/api/v1/tasks?finish=false"),
-//             // axios.get("http://localhost:5000/api/v1/tasks?finish=true"),
-//           ]);
-
-//         const unfinishedTasks = unfinishedTasksResponse.data.data;
-//         // const finishedTasks = finishedTasksResponse.data.data;
-
-//         // setTasks([...unfinishedTasks, ...finishedTasks]);
-
-//         setTasks([...unfinishedTasks]);
-//       } catch (error) {
-//         console.error("Error fetching tasks:", error);
-//       }
-//     };
-
-//     fetchTasks();
-//   }, []);
-
-//   // Add a new task
-//   const addTask = () => {
-//     const task = { description: newTask };
-//     axios
-//       .post("http://localhost:5000/api/v1/tasks", task)
-//       .then((response) => setTasks([response.data.data, ...tasks]))
-//       .catch((error) => console.error("Error adding task:", error));
-//     setNewTask("");
-//     setShowInput(false);
-//   };
-
-//   return (
-//     <div className="task-app">
-//       {!showInput && (
-//         <div className="button-container">
-//           <button id="add-button" onClick={() => setShowInput(true)}>
-//             + Add Item
-//           </button>
-//         </div>
-//       )}
-
-//       {showInput && (
-//         <div className="task-input">
-//           <input
-//             type="text"
-//             value={newTask}
-//             onChange={(e) => setNewTask(e.target.value)}
-//             placeholder="Enter a task..."
-//           />
-//           <div className="task-buttons">
-//             <button id="taskadd-button" onClick={addTask}>
-//               Add
-//             </button>
-//             <button id="cancel-button" onClick={() => setShowInput(false)}>
-//               Cancel
-//             </button>
-//           </div>
-//         </div>
-//       )}
-
-//       {/* Task Container */}
-//       {tasks.length > 0 && (
-//         <div className="task-container">
-//           <TasksList tasks={tasks} setTasks={setTasks} />
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default TasksApp;
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import TasksList from "./TasksList";
+import { parseISO, compareAsc, compareDesc } from "date-fns";
 import "./styles/TasksApp.css";
 
 const TasksApp = () => {
@@ -97,7 +13,7 @@ const TasksApp = () => {
   });
   const [showInput, setShowInput] = useState(false);
   const [sortPriority, setSortPriority] = useState("");
-  const [filterDueDate, setFilterDueDate] = useState("");
+  const [sortDueDate, setSortDueDate] = useState(""); // "near" hoặc "far"
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -129,19 +45,34 @@ const TasksApp = () => {
 
   const filteredTasks = tasks
     .filter((task) => {
-      if (!filterDueDate) return true;
-      return task.due_date === filterDueDate;
+      if (!sortPriority) return true; // Không lọc nếu chưa chọn priority
+      return task.priority === sortPriority;
     })
     .sort((a, b) => {
-      if (!sortPriority) return 0;
-      const priorities = { high: 3, medium: 2, low: 1 };
-      return priorities[b.priority] - priorities[a.priority];
-    });
+      // Kiểm tra nếu due_date bị null hoặc không hợp lệ
+      const dateA = a.due_date ? parseISO(a.due_date) : null;
+      const dateB = b.due_date ? parseISO(b.due_date) : null;
 
+      if (sortDueDate === "near") {
+        if (!dateA) return 1; // Nếu task A không có due_date, đưa xuống cuối
+        if (!dateB) return -1;
+        return compareAsc(dateA, dateB);
+      }
+
+      if (sortDueDate === "far") {
+        if (!dateA) return 1;
+        if (!dateB) return -1;
+        return compareDesc(dateA, dateB);
+      }
+
+      return 0;
+    });
   return (
     <div className="task-app">
+      {/* Bộ lọc */}
       <div className="filters">
         <select
+          className="filter-select"
           value={sortPriority}
           onChange={(e) => setSortPriority(e.target.value)}
         >
@@ -150,19 +81,28 @@ const TasksApp = () => {
           <option value="medium">Medium</option>
           <option value="low">Low</option>
         </select>
-        <input
-          type="date"
-          value={filterDueDate}
-          onChange={(e) => setFilterDueDate(e.target.value)}
-        />
+
+        <select
+          className="filter-select"
+          value={sortDueDate}
+          onChange={(e) => setSortDueDate(e.target.value)}
+        >
+          <option value="">Sort by Due Date</option>
+          <option value="near">Near</option>
+          <option value="far">Far</option>
+        </select>
       </div>
 
+      {/* Nút Add Task */}
       {!showInput && (
-        <button id="add-button" onClick={() => setShowInput(true)}>
-          + Add Task
-        </button>
+        <div className="button-container">
+          <button className="btn add-btn" onClick={() => setShowInput(true)}>
+            + Add Task
+          </button>
+        </div>
       )}
 
+      {/* Form nhập task */}
       {showInput && (
         <div className="task-input">
           <input
@@ -190,11 +130,21 @@ const TasksApp = () => {
             <option value="medium">Medium</option>
             <option value="low">Low</option>
           </select>
-          <button onClick={addTask}>Add</button>
-          <button onClick={() => setShowInput(false)}>Cancel</button>
+          <div className="task-buttons">
+            <button className="btn confirm-btn" onClick={addTask}>
+              Add
+            </button>
+            <button
+              className="btn cancel-btn"
+              onClick={() => setShowInput(false)}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
 
+      {/* Danh sách Task */}
       <TasksList tasks={filteredTasks} setTasks={setTasks} />
     </div>
   );
