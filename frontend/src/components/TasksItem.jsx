@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./styles/TasksItem.css";
 
+const baseURL = `http://localhost:5000`;
+
 const TasksItem = ({ task, tasks, setTasks }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editTask, setEditTask] = useState({ ...task });
 
   const deleteTask = async () => {
     try {
-      await axios.delete(`http://localhost:5000/api/v1/tasks/${task._id}`);
+      await axios.delete(`${baseURL}/api/v1/tasks/${task._id}`);
       setTasks(tasks.filter((t) => t._id !== task._id));
     } catch (error) {
       console.error("Error deleting task:", error);
@@ -17,7 +19,7 @@ const TasksItem = ({ task, tasks, setTasks }) => {
 
   const toggleCompletion = async () => {
     try {
-      await axios.put(`http://localhost:5000/api/v1/tasks/${task._id}`, {
+      await axios.put(`${baseURL}/api/v1/tasks/${task._id}`, {
         finish: !task.finish,
       });
       setTasks(
@@ -30,10 +32,7 @@ const TasksItem = ({ task, tasks, setTasks }) => {
 
   const saveEdit = async () => {
     try {
-      await axios.put(
-        `http://localhost:5000/api/v1/tasks/${task._id}`,
-        editTask
-      );
+      await axios.put(`${baseURL}/api/v1/tasks/${task._id}`, editTask);
       setTasks(tasks.map((t) => (t._id === task._id ? editTask : t)));
       setIsEditing(false);
     } catch (error) {
@@ -48,6 +47,7 @@ const TasksItem = ({ task, tasks, setTasks }) => {
     const year = d.getFullYear();
     return `${day}-${month}-${year}`;
   };
+
   return (
     <li className="task-item">
       <span onClick={toggleCompletion} style={{ cursor: "pointer" }}>

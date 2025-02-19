@@ -4,6 +4,8 @@ import TasksList from "./TasksList";
 import { parseISO, compareAsc, compareDesc } from "date-fns";
 import "./styles/TasksApp.css";
 
+const baseURL = `http://localhost:5000`;
+
 const TasksApp = () => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState({
@@ -18,9 +20,7 @@ const TasksApp = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await axios.get(
-          "http://localhost:5000/api/v1/tasks?order=asc"
-        );
+        const response = await axios.get(`${baseURL}/api/v1/tasks?order=asc`);
         setTasks(response.data.data);
       } catch (error) {
         console.error("Error fetching tasks:", error);
@@ -31,10 +31,7 @@ const TasksApp = () => {
 
   const addTask = async () => {
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/v1/tasks",
-        newTask
-      );
+      const response = await axios.post(`${baseURL}/api/v1/tasks`, newTask);
       setTasks([response.data.data, ...tasks]);
       setNewTask({ description: "", due_date: "", priority: "medium" });
       setShowInput(false);
@@ -67,6 +64,7 @@ const TasksApp = () => {
 
       return 0;
     });
+
   return (
     <div className="task-app">
       {/* Bộ lọc */}

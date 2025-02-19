@@ -3,6 +3,8 @@ import axios from "axios";
 import TasksList from "./TasksList";
 import "./styles/TasksHome.css";
 
+const baseURL = `http://localhost:5000`;
+
 const TasksHome = () => {
   const [tasks, setTasks] = useState([]);
   const [sortPriority, setSortPriority] = useState(""); // Lọc theo mức độ ưu tiên
@@ -11,7 +13,7 @@ const TasksHome = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        let url = "http://localhost:5000/api/v1/tasks?finish=true&order=asc";
+        let url = `${baseURL}/api/v1/tasks?finish=true&order=asc`;
 
         // Áp dụng bộ lọc theo mức độ ưu tiên
         if (sortPriority) {
@@ -33,7 +35,7 @@ const TasksHome = () => {
     };
 
     fetchTasks();
-  }, [sortPriority, sortDueDate]); // Chạy lại khi thay đổi bộ lọcs
+  }, [sortPriority, sortDueDate]); // Chạy lại khi thay đổi bộ lọc
 
   return (
     <div className="finished-tasks-container">
